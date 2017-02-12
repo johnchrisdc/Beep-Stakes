@@ -17,4 +17,16 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="AppTheme.MRT3">
+        <item name="colorAccent">@color/color_mrt3</item>
+    </style>
+
+    <style name="AppTheme.LRT1">
+        <item name="colorAccent">@color/color_lrt1</item>
+    </style>
+
+    <style name="AppTheme.LRT2">
+        <item name="colorAccent">@color/color_lrt2</item>
+    </style>
+
 </resources>

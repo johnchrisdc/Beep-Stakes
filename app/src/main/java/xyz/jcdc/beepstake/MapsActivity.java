@@ -1,5 +1,6 @@
 package xyz.jcdc.beepstake;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -10,6 +11,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -62,6 +67,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+
+            case R.id.layers:
+                showLayersDialog();
+                break;
+
+        }
+
+        return true;
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(
@@ -76,6 +95,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         new GetMRT3Line().execute();
         new GetLRT1Line().execute();
         new GetLRT2Line().execute();
+    }
+
+    private void showLayersDialog(){
+        final Dialog dialog = new Dialog(mContext);
+        dialog.setContentView(R.layout.dialog_layers);
+        dialog.setTitle("Layers");
+
+        Button dismiss = (Button) dialog.findViewById(R.id.dismiss);
+
+        dismiss.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private class GetMarkers extends AsyncTask<String, String, List<Marker>>{
