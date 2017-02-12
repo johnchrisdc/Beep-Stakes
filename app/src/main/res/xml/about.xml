@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <PreferenceCategory android:title="About">
+
+        <Preference
+            android:key="developer"
+            android:summary="Brought to you by your friends at PotatoInc"
+            android:title="Developer" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Credits">
+
+        <Preference
+            android:key="dotcmrt"
+            android:title="Our friends from DOTC MRT3 Line 3"
+            android:summary="https://dotcmrt3.gov.ph/" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
