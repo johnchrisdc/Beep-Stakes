@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/layers"
-        android:icon="@drawable/ic_layers_white_24dp"
+        android:icon="@drawable/ic_layers_black_24dp"
         android:title="Layers"
         app:showAsAction="always" />
 

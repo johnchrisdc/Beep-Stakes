@@ -39,6 +39,7 @@
                 android:orientation="vertical">
 
                 <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_beep_sites"
                     android:layout_width="match_parent"
                     android:layout_height="46dp"
                     android:checked="true"
@@ -47,6 +48,7 @@
                     android:textColor="@color/colorAccent" />
 
                 <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_MRT3"
                     android:layout_width="match_parent"
                     android:layout_height="46dp"
                     android:checked="true"
@@ -56,6 +58,7 @@
                     app:theme="@style/AppTheme.MRT3" />
 
                 <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_LRT1"
                     android:layout_width="match_parent"
                     android:layout_height="46dp"
                     android:checked="true"
@@ -65,6 +68,7 @@
                     app:theme="@style/AppTheme.LRT1" />
 
                 <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_LRT2"
                     android:layout_width="match_parent"
                     android:layout_height="46dp"
                     android:checked="true"
