@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
@@ -19,6 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -49,7 +53,9 @@ import xyz.jcdc.beepstake.model.LRT2Line;
 import xyz.jcdc.beepstake.model.MRT3Line;
 import xyz.jcdc.beepstake.model.Marker;
 
-public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback, Drawer.OnDrawerItemClickListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
+        Drawer.OnDrawerItemClickListener, GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener {
 
     private Context mContext;
 
@@ -77,15 +83,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
 
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private View mBottomSheet;
+
+    private TextView mPlaceName;
+    private TextView mPlaceAddress;
+    private LinearLayout mPlaceTitleHolder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
 
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_main);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
+
+        mBottomSheet = findViewById( R.id.bottom_sheet );
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
+        mPlaceName = (TextView) findViewById(R.id.place_name);
+        mPlaceAddress = (TextView) findViewById(R.id.place_address);
+        mPlaceTitleHolder = (LinearLayout) findViewById(R.id.title_holder);
 
         new DrawerBuilder().withActivity(this).build();
 
@@ -168,6 +187,29 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         new GetMRT3Line().execute();
         new GetLRT1Line().execute();
         new GetLRT2Line().execute();
+
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
+    }
+
+    @Override
+    public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
+        if (marker.getTag() != null){
+            Marker beep_marker = (Marker) marker.getTag();
+
+            mPlaceName.setText(beep_marker.getName());
+            mPlaceAddress.setText(beep_marker.getAddress());
+            /*mBottomSheetBehavior.setPeekHeight(mPlaceTitleHolder.getHeight());
+            mPlaceTitleHolder.requestLayout();*/
+            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        }
+        return false;
     }
 
     private void showLayersDialog() {
@@ -401,6 +443,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     .position(marker_position)
                                     .title(marker.getName())
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_grey)));
+                    mapMarker.setTag(marker);
 
                     mbeepStations.add(mapMarker);
                 }

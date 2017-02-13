@@ -9,4 +9,7 @@
     <color name="color_mrt3">#f1c926</color>
     <color name="color_lrt1">#e95d48</color>
     <color name="color_lrt2">#9957b5</color>
+
+    <color name="color_title">#000000</color>
+    <color name="color_subtitle">#303030</color>
 </resources>
