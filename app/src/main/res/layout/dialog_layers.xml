@@ -48,16 +48,6 @@
                     android:textColor="@color/colorAccent" />
 
                 <android.support.v7.widget.SwitchCompat
-                    android:id="@+id/switch_MRT3"
-                    android:layout_width="match_parent"
-                    android:layout_height="46dp"
-                    android:checked="true"
-                    android:text="MRT 3"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="@color/color_mrt3"
-                    app:theme="@style/AppTheme.MRT3" />
-
-                <android.support.v7.widget.SwitchCompat
                     android:id="@+id/switch_LRT1"
                     android:layout_width="match_parent"
                     android:layout_height="46dp"
@@ -76,6 +66,16 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="@color/color_lrt2"
                     app:theme="@style/AppTheme.LRT2" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_MRT3"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:checked="true"
+                    android:text="MRT 3"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/color_mrt3"
+                    app:theme="@style/AppTheme.MRT3" />
 
             </LinearLayout>
 
