@@ -1,5 +1,7 @@
 package xyz.jcdc.beepstake;
 
+import android.*;
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +11,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +30,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -38,6 +46,12 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
@@ -48,14 +62,20 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import xyz.jcdc.beepstake.fragment.LRT1Fragment;
+import xyz.jcdc.beepstake.fragment.LRT2Fragment;
+import xyz.jcdc.beepstake.fragment.MRT3Fragment;
+import xyz.jcdc.beepstake.fragment.MarkerFragment;
 import xyz.jcdc.beepstake.model.LRT1Line;
 import xyz.jcdc.beepstake.model.LRT2Line;
+import xyz.jcdc.beepstake.model.Line;
 import xyz.jcdc.beepstake.model.MRT3Line;
 import xyz.jcdc.beepstake.model.Marker;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         Drawer.OnDrawerItemClickListener, GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener {
+        GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener,
+        PermissionListener {
 
     private Context mContext;
 
@@ -85,26 +105,60 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private BottomSheetBehavior mBottomSheetBehavior;
     private View mBottomSheet;
+    private ViewPager viewPager;
+    private List<Marker> beep_markers = new ArrayList<>();
 
-    private TextView mPlaceName;
-    private TextView mPlaceAddress;
-    private LinearLayout mPlaceTitleHolder;
+    private BottomSheetBehavior mBottomSheetBehavior_mrt3;
+    private View mBottomSheet_mrt3;
+    private ViewPager viewPager_mrt3;
+    private List<MRT3Line> mrt3_markers = new ArrayList<>();
+
+    private BottomSheetBehavior mBottomSheetBehavior_lrt1;
+    private View mBottomSheet_lrt1;
+    private ViewPager viewPager_lrt1;
+    private List<LRT1Line> lrt_markers = new ArrayList<>();
+
+    private BottomSheetBehavior mBottomSheetBehavior_lrt2;
+    private View mBottomSheet_lrt2;
+    private ViewPager viewPager_lrt2;
+    private List<LRT2Line> lrt2_markers = new ArrayList<>();
+
+    private boolean isPermissionGranted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
 
+        Dexter.withActivity(this)
+                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+                .withListener(this)
+                .check();
+
         setContentView(R.layout.activity_main);
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        mBottomSheet = findViewById( R.id.bottom_sheet );
+        mBottomSheet = findViewById(R.id.bottom_sheet);
         mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheet);
-        mPlaceName = (TextView) findViewById(R.id.place_name);
-        mPlaceAddress = (TextView) findViewById(R.id.place_address);
-        mPlaceTitleHolder = (LinearLayout) findViewById(R.id.title_holder);
+
+        viewPager = (ViewPager) findViewById(R.id.viewpager);
+
+        mBottomSheet_mrt3 = findViewById(R.id.bottom_sheet_mrt3);
+        mBottomSheetBehavior_mrt3 = BottomSheetBehavior.from(mBottomSheet_mrt3);
+
+        viewPager_mrt3 = (ViewPager) findViewById(R.id.viewpager_mrt3);
+
+        mBottomSheet_lrt1 = findViewById(R.id.bottom_sheet_lrt1);
+        mBottomSheetBehavior_lrt1 = BottomSheetBehavior.from(mBottomSheet_lrt1);
+
+        viewPager_lrt1 = (ViewPager) findViewById(R.id.viewpager_lrt1);
+
+        mBottomSheet_lrt2 = findViewById(R.id.bottom_sheet_lrt2);
+        mBottomSheetBehavior_lrt2 = BottomSheetBehavior.from(mBottomSheet_lrt2);
+
+        viewPager_lrt2 = (ViewPager) findViewById(R.id.viewpager_lrt2);
 
         new DrawerBuilder().withActivity(this).build();
 
@@ -129,8 +183,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
+    public void onPermissionDenied(PermissionDeniedResponse response) {
+        isPermissionGranted = false;
+
+        setDefaultLocation();
+    }
+
+    @Override
+    public void onPermissionGranted(PermissionGrantedResponse response) {
+        isPermissionGranted = true;
+
+        if (mMap != null) {
+            getLocation();
+
+            try {
+                mMap.setMyLocationEnabled(true);
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
+    @Override
+    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+        token.continuePermissionRequest();
+    }
+
+    @Override
     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-        switch (position){
+        switch (position) {
             case 0:
                 break;
 
@@ -171,7 +253,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(
                 this, R.raw.ultra_light_with_labels));
 
-        getLocation();
+        if (isPermissionGranted)
+            getLocation();
 
         mMap.setPadding(mToolbar.getHeight(), mToolbar.getHeight(), mToolbar.getHeight(), mToolbar.getHeight());
 
@@ -192,24 +275,60 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                collapseBottomSheets();
             }
         });
     }
 
     @Override
-    public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker) {
-        if (marker.getTag() != null){
-            Marker beep_marker = (Marker) marker.getTag();
+    public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker_) {
 
-            mPlaceName.setText(beep_marker.getName());
-            mPlaceAddress.setText(beep_marker.getAddress());
-            /*mBottomSheetBehavior.setPeekHeight(mPlaceTitleHolder.getHeight());
-            mPlaceTitleHolder.requestLayout();*/
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        if (marker_.getTag() != null) {
+            final Line marker = (Line) marker_.getTag();
 
+            if (marker.getGroup_key() == null) {
+                viewPager.setCurrentItem(marker.getPosition(), true);
+
+                mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+            } else if (marker.getGroup_key().equalsIgnoreCase(MRT3Line.GROUP_KEY)) {
+                viewPager_mrt3.setCurrentItem(marker.getPosition(), true);
+
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_EXPANDED);
+                mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+            } else if (marker.getGroup_key().equalsIgnoreCase(LRT1Line.GROUP_KEY)) {
+                viewPager_lrt1.setCurrentItem(marker.getPosition(), true);
+
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_EXPANDED);
+                mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+            } else if (marker.getGroup_key().equalsIgnoreCase(LRT2Line.GROUP_KEY)) {
+                viewPager_lrt2.setCurrentItem(marker.getPosition(), true);
+
+                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            }
         }
         return false;
+    }
+
+    private void collapseBottomSheets() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
     }
 
     private void showLayersDialog() {
@@ -357,8 +476,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void getLocation(){
+    private MaterialDialog materialProgressDialog;
+
+    private void getLocation() {
         if (mGoogleApiClient == null) {
+
+            materialProgressDialog = new MaterialDialog.Builder(this)
+                    .title(getString(R.string.dialog_location_title))
+                    .content(getString(R.string.dialog_location_message))
+                    .progress(true, 0)
+                    .show();
+
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
@@ -372,6 +500,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+
         try {
             mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
                     mGoogleApiClient);
@@ -384,22 +513,53 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         .zoom(15)
                         .build();
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
+            } else {
+                setDefaultLocation();
             }
-        } catch (SecurityException e){
+        } catch (SecurityException e) {
             e.printStackTrace();
         }
 
+        materialProgressDialog.dismiss();
+    }
+
+    private MaterialDialog materialDialog;
+
+    private void setDefaultLocation() {
+        materialDialog = new MaterialDialog.Builder(this)
+                .title("Oh snap!")
+                .content("Unable to get current location, Lemme take you to my favorite LRT station. Arriving at Gilmore Station. Ubos nanaman ang pera sa Gilmore Station.")
+                .positiveText("Dismiss")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        dialog.dismiss();
+
+                        LatLng gilmore = new LatLng(14.613494, 121.034195);
+                        //mMap.moveCamera(CameraUpdateFactory.newLatLng(you));
+
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(gilmore)
+                                .zoom(15)
+                                .build();
+
+                        if (mMap != null)
+                            mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    }
+                })
+                .show();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        materialProgressDialog.dismiss();
+        setDefaultLocation();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        materialProgressDialog.dismiss();
+        setDefaultLocation();
     }
 
     @Override
@@ -409,7 +569,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     protected void onStop() {
-        mGoogleApiClient.disconnect();
+        if (mGoogleApiClient != null)
+            mGoogleApiClient.disconnect();
         super.onStop();
     }
 
@@ -431,11 +592,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         @Override
-        protected void onPostExecute(List<Marker> markers) {
+        protected void onPostExecute(final List<Marker> markers) {
             super.onPostExecute(markers);
 
             if (markers != null) {
+                int x = 0;
                 for (Marker marker : markers) {
+                    marker.setPosition(x);
+                    x++;
                     LatLng marker_position = new LatLng(marker.getLat(), marker.getLng());
 
                     com.google.android.gms.maps.model.Marker mapMarker = mMap.addMarker(
@@ -446,7 +610,37 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mapMarker.setTag(marker);
 
                     mbeepStations.add(mapMarker);
+                    beep_markers.add(marker);
                 }
+
+                MarkersPagerAdapter markersPagerAdapter = new MarkersPagerAdapter(getSupportFragmentManager(), beep_markers);
+
+                viewPager.setClipToPadding(false);
+                viewPager.setPageMargin(5);
+                viewPager.setPadding(60, 0, 60, 0);
+                viewPager.setOffscreenPageLimit(3);
+
+                viewPager.setAdapter(markersPagerAdapter);
+
+                viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        LatLng latLng = new LatLng(beep_markers.get(position).getLat(), beep_markers.get(position).getLng());
+                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
+                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
+
             }
 
         }
@@ -475,7 +669,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             if (mrt3Lines != null) {
                 LatLng prev_LatLng = null;
+                int x = 0;
                 for (MRT3Line mrt3Line : mrt3Lines) {
+                    mrt3Line.setPosition(x);
+                    x++;
                     if (prev_LatLng != null) {
                         Polyline line = mMap.addPolyline(new PolylineOptions()
                                 .add(prev_LatLng, new LatLng(mrt3Line.getLat(), mrt3Line.getLng()))
@@ -490,8 +687,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_train_mrt3)));
                     prev_LatLng = new LatLng(mrt3Line.getLat(), mrt3Line.getLng());
 
+                    mapMarker.setTag(mrt3Line);
+
                     mMRT3Stations.add(mapMarker);
+                    mrt3_markers.add(mrt3Line);
                 }
+
+                MRT3PagerAdapter markersPagerAdapter = new MRT3PagerAdapter(getSupportFragmentManager(), mrt3_markers);
+
+                viewPager_mrt3.setClipToPadding(false);
+                viewPager_mrt3.setPageMargin(5);
+                viewPager_mrt3.setPadding(60, 0, 60, 0);
+                viewPager_mrt3.setOffscreenPageLimit(3);
+
+                viewPager_mrt3.setAdapter(markersPagerAdapter);
+
+                viewPager_mrt3.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        LatLng latLng = new LatLng(mrt3_markers.get(position).getLat(), mrt3_markers.get(position).getLng());
+                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
+                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
 
             }
 
@@ -521,7 +749,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             if (lrt1Lines != null) {
                 LatLng prev_LatLng = null;
+                int x = 0;
                 for (LRT1Line lrt1Line : lrt1Lines) {
+                    lrt1Line.setPosition(x);
+                    x++;
                     if (prev_LatLng != null) {
                         Polyline line = mMap.addPolyline(new PolylineOptions()
                                 .add(prev_LatLng, new LatLng(lrt1Line.getLat(), lrt1Line.getLng()))
@@ -538,8 +769,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     prev_LatLng = new LatLng(lrt1Line.getLat(), lrt1Line.getLng());
 
+                    mapMarker.setTag(lrt1Line);
+
                     mLRT1Stations.add(mapMarker);
+                    lrt_markers.add(lrt1Line);
                 }
+
+                LRT1PagerAdapter markersPagerAdapter = new LRT1PagerAdapter(getSupportFragmentManager(), lrt_markers);
+
+                viewPager_lrt1.setClipToPadding(false);
+                viewPager_lrt1.setPageMargin(5);
+                viewPager_lrt1.setPadding(60, 0, 60, 0);
+                viewPager_lrt1.setOffscreenPageLimit(3);
+
+                viewPager_lrt1.setAdapter(markersPagerAdapter);
+
+                viewPager_lrt1.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        LatLng latLng = new LatLng(lrt_markers.get(position).getLat(), lrt_markers.get(position).getLng());
+                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
+                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
 
             }
 
@@ -569,7 +831,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             if (lrt2Lines != null) {
                 LatLng prev_LatLng = null;
+                int x = 0;
                 for (LRT2Line lrt2Line : lrt2Lines) {
+                    lrt2Line.setPosition(x);
+                    x++;
                     if (prev_LatLng != null) {
                         Polyline line = mMap.addPolyline(new PolylineOptions()
                                 .add(prev_LatLng, new LatLng(lrt2Line.getLat(), lrt2Line.getLng()))
@@ -586,11 +851,162 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     prev_LatLng = new LatLng(lrt2Line.getLat(), lrt2Line.getLng());
 
+                    mapMarker.setTag(lrt2Line);
+
                     mLRT2Stations.add(mapMarker);
+                    lrt2_markers.add(lrt2Line);
                 }
+
+                LRT2PagerAdapter markersPagerAdapter = new LRT2PagerAdapter(getSupportFragmentManager(), lrt2_markers);
+
+                viewPager_lrt2.setClipToPadding(false);
+                viewPager_lrt2.setPageMargin(5);
+                viewPager_lrt2.setPadding(60, 0, 60, 0);
+                viewPager_lrt2.setOffscreenPageLimit(3);
+
+                viewPager_lrt2.setAdapter(markersPagerAdapter);
+
+                viewPager_lrt2.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                    @Override
+                    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                    }
+
+                    @Override
+                    public void onPageSelected(int position) {
+                        LatLng latLng = new LatLng(lrt2_markers.get(position).getLat(), lrt2_markers.get(position).getLng());
+                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
+                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    }
+
+                    @Override
+                    public void onPageScrollStateChanged(int state) {
+
+                    }
+                });
 
             }
 
+        }
+    }
+
+    private class MarkersPagerAdapter extends FragmentStatePagerAdapter {
+
+        List<Marker> markers;
+
+        public MarkersPagerAdapter(FragmentManager fm, List<Marker> markers) {
+            super(fm);
+            this.markers = markers;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = new MarkerFragment();
+            ((MarkerFragment) fragment).setMarker(markers.get(position));
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return markers.size();
+        }
+
+        public List<Marker> getMarkers() {
+            return markers;
+        }
+
+        public void setMarkers(List<Marker> markers) {
+            this.markers = markers;
+        }
+    }
+
+    private class MRT3PagerAdapter extends FragmentStatePagerAdapter {
+
+        List<MRT3Line> markers;
+
+        public MRT3PagerAdapter(FragmentManager fm, List<MRT3Line> markers) {
+            super(fm);
+            this.markers = markers;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = new MRT3Fragment();
+            ((MRT3Fragment) fragment).setMarker(markers.get(position));
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return markers.size();
+        }
+
+        public List<MRT3Line> getMarkers() {
+            return markers;
+        }
+
+        public void setMarkers(List<MRT3Line> markers) {
+            this.markers = markers;
+        }
+    }
+
+    private class LRT1PagerAdapter extends FragmentStatePagerAdapter {
+
+        List<LRT1Line> markers;
+
+        public LRT1PagerAdapter(FragmentManager fm, List<LRT1Line> markers) {
+            super(fm);
+            this.markers = markers;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = new LRT1Fragment();
+            ((LRT1Fragment) fragment).setMarker(markers.get(position));
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return markers.size();
+        }
+
+        public List<LRT1Line> getMarkers() {
+            return markers;
+        }
+
+        public void setMarkers(List<LRT1Line> markers) {
+            this.markers = markers;
+        }
+    }
+
+    private class LRT2PagerAdapter extends FragmentStatePagerAdapter {
+
+        List<LRT2Line> markers;
+
+        public LRT2PagerAdapter(FragmentManager fm, List<LRT2Line> markers) {
+            super(fm);
+            this.markers = markers;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = new LRT2Fragment();
+            ((LRT2Fragment) fragment).setMarker(markers.get(position));
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return markers.size();
+        }
+
+        public List<LRT2Line> getMarkers() {
+            return markers;
+        }
+
+        public void setMarkers(List<LRT2Line> markers) {
+            this.markers = markers;
         }
     }
 

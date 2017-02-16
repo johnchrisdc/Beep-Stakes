@@ -17,6 +17,8 @@ import xyz.jcdc.beepstake.Variables;
 
 public class LRT2Line extends Line {
 
+    public static final String GROUP_KEY = "lrt2-line";
+
     public static List<LRT2Line> getLine() throws Exception {
 
         OkHttpClient client = new OkHttpClient();

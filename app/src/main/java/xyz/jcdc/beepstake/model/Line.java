@@ -13,6 +13,16 @@ public class Line {
     private double lng;
     private double lat;
 
+    private int position;
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     public String getAddress() {
         return address;
     }

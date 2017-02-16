@@ -23,44 +23,68 @@
 
     <include layout="@layout/content_main" />
 
-    <android.support.v7.widget.CardView
-        android:id="@+id/bottom_sheet"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/bottom_sheet_lrt2"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="120dp"
         android:clipToPadding="true"
         app:behavior_peekHeight="0dp"
         app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-        <FrameLayout
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_lrt2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"/>
 
-            <LinearLayout
-                android:id="@+id/title_holder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+    </LinearLayout>
 
-                <TextView
-                    android:textColor="@color/color_title"
-                    android:id="@+id/place_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Title" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/bottom_sheet_lrt1"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:clipToPadding="true"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-                <TextView
-                    android:id="@+id/place_address"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:textColor="@color/color_subtitle"/>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_lrt1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-            </LinearLayout>
+    </LinearLayout>
 
-        </FrameLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/bottom_sheet_mrt3"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:clipToPadding="true"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
-    </android.support.v7.widget.CardView>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager_mrt3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:clipToPadding="true"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -18,6 +18,8 @@ import xyz.jcdc.beepstake.Variables;
 
 public class MRT3Line extends Line {
 
+    public static final String GROUP_KEY = "mrt3-line";
+
     public static List<MRT3Line> getLine() throws Exception {
 
         OkHttpClient client = new OkHttpClient();
