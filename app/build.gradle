@@ -44,4 +44,6 @@ dependencies {
 
     compile 'com.afollestad.material-dialogs:core:0.9.2.3'
 
+    compile 'com.pnikosis:materialish-progress:1.7'
+
 }

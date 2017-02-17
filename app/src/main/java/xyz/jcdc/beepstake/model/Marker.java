@@ -19,7 +19,7 @@ public class Marker extends Line {
 
     public static List<Marker> getMarkers() throws Exception {
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder().retryOnConnectionFailure(true).build();
 
         Request request = new Request.Builder()
                 .url(Variables.MARKERS)

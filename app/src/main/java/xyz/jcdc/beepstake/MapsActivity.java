@@ -58,6 +58,7 @@ import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.pnikosis.materialishprogress.ProgressWheel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,6 +126,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private boolean isPermissionGranted = false;
 
+    private ProgressWheel progressWheel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,6 +162,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mBottomSheetBehavior_lrt2 = BottomSheetBehavior.from(mBottomSheet_lrt2);
 
         viewPager_lrt2 = (ViewPager) findViewById(R.id.viewpager_lrt2);
+
+        progressWheel = (ProgressWheel) findViewById(R.id.progress_wheel);
 
         new DrawerBuilder().withActivity(this).build();
 
@@ -640,6 +645,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     }
                 });
+
+                progressWheel.setVisibility(View.GONE);
+                progressWheel.stopSpinning();
 
             }
 
