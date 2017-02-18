@@ -78,7 +78,7 @@ import xyz.jcdc.beepstake.model.Marker;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         Drawer.OnDrawerItemClickListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, GoogleMap.OnMarkerClickListener,
-        PermissionListener {
+        PermissionListener, MarkerFragment.OnMarkerClicked {
 
     private Context mContext;
 
@@ -331,6 +331,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         return false;
     }
 
+    @Override
+    public void onMarkerClicked(Marker marker) {
+        LatLng loc = new LatLng(marker.getLat(), marker.getLng());
+
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(loc)
+                .zoom(15)
+                .build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
     private void collapseBottomSheets() {
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -343,6 +354,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (mLastLocation != null) {
             if (nearbyBeepSiteDialogFragment != null){
                 nearbyBeepSiteDialogFragment = new NearbyBeepSiteDialogFragment();
+                nearbyBeepSiteDialogFragment.setOnMarkerClicked(this);
                 nearbyBeepSiteDialogFragment.setMarkers(beep_markers);
                 nearbyBeepSiteDialogFragment.show(getSupportFragmentManager(), "nearby");
             }
@@ -659,6 +671,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 if (mLastLocation != null) {
                     nearbyBeepSiteDialogFragment = new NearbyBeepSiteDialogFragment();
+                    nearbyBeepSiteDialogFragment.setOnMarkerClicked(MapsActivity.this);
                     nearbyBeepSiteDialogFragment.setMarkers(beep_markers);
                     nearbyBeepSiteDialogFragment.show(getSupportFragmentManager(), "nearby");
                 }

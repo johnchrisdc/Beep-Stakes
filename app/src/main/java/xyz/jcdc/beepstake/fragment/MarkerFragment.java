@@ -30,6 +30,16 @@ public class MarkerFragment extends Fragment {
 
     private Location my_location;
 
+    private OnMarkerClicked onMarkerClicked;
+
+    public void setOnMarkerClicked(OnMarkerClicked onMarkerClicked) {
+        this.onMarkerClicked = onMarkerClicked;
+    }
+
+    public interface OnMarkerClicked {
+        void onMarkerClicked(Marker marker);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -55,6 +65,14 @@ public class MarkerFragment extends Fragment {
             }
 
         }
+
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onMarkerClicked != null)
+                    onMarkerClicked.onMarkerClicked(marker);
+            }
+        });
 
         return v;
     }
