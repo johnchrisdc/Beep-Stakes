@@ -570,7 +570,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setDefaultLocation() {
         materialDialog = new MaterialDialog.Builder(this)
                 .title("Oh snap!")
-                .content("Unable to get current location, Lemme take you to my favorite LRT station. Arriving at Gilmore Station. Ubos nanaman ang pera sa Gilmore Station.")
+                .content("Unable to get current location, Lemme take you to my favorite LRT station.\n #PCMASTERRACE")
                 .positiveText("Dismiss")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
