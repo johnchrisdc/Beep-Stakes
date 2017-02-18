@@ -67,6 +67,8 @@ import xyz.jcdc.beepstake.fragment.LRT1Fragment;
 import xyz.jcdc.beepstake.fragment.LRT2Fragment;
 import xyz.jcdc.beepstake.fragment.MRT3Fragment;
 import xyz.jcdc.beepstake.fragment.MarkerFragment;
+import xyz.jcdc.beepstake.fragment.NearbyBeepSiteDialogFragment;
+import xyz.jcdc.beepstake.helper.NumberHelper;
 import xyz.jcdc.beepstake.model.LRT1Line;
 import xyz.jcdc.beepstake.model.LRT2Line;
 import xyz.jcdc.beepstake.model.Line;
@@ -127,6 +129,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private boolean isPermissionGranted = false;
 
     private ProgressWheel progressWheel;
+
+    private NearbyBeepSiteDialogFragment nearbyBeepSiteDialogFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -247,6 +251,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 showLayersDialog();
                 break;
 
+            case R.id.nearby:
+                showNearbyDialog();
+                break;
+
         }
 
         return true;
@@ -330,6 +338,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
     }
+
+    private void showNearbyDialog() {
+        if (mLastLocation != null) {
+            if (nearbyBeepSiteDialogFragment != null){
+                nearbyBeepSiteDialogFragment = new NearbyBeepSiteDialogFragment();
+                nearbyBeepSiteDialogFragment.setMarkers(beep_markers);
+                nearbyBeepSiteDialogFragment.show(getSupportFragmentManager(), "nearby");
+            }
+        } else {
+            new MaterialDialog.Builder(this)
+                    .title("Oh snap!")
+                    .content("Unable to get current location")
+                    .positiveText("Dismiss")
+                    .show();
+        }
+    }
+
 
     private void showLayersDialog() {
         final Dialog dialog = new Dialog(mContext);
@@ -608,6 +633,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (markers != null) {
                 int x = 0;
                 for (Marker marker : markers) {
+
                     marker.setPosition(x);
                     x++;
                     LatLng marker_position = new LatLng(marker.getLat(), marker.getLng());
@@ -621,6 +647,20 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     mbeepStations.add(mapMarker);
                     beep_markers.add(marker);
+
+                    if (mLastLocation != null) {
+                        Location target = new Location("target");
+                        target.setLatitude(marker.getLat());
+                        target.setLongitude(marker.getLng());
+
+                        marker.setDistance(mLastLocation.distanceTo(target));
+                    }
+                }
+
+                if (mLastLocation != null) {
+                    nearbyBeepSiteDialogFragment = new NearbyBeepSiteDialogFragment();
+                    nearbyBeepSiteDialogFragment.setMarkers(beep_markers);
+                    nearbyBeepSiteDialogFragment.show(getSupportFragmentManager(), "nearby");
                 }
 
                 MarkersPagerAdapter markersPagerAdapter = new MarkersPagerAdapter(getSupportFragmentManager(), beep_markers);

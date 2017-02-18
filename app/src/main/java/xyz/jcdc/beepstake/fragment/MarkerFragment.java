@@ -50,6 +50,8 @@ public class MarkerFragment extends Fragment {
                 target.setLongitude(marker.getLng());
 
                 place_distance.setText(NumberHelper.formatNumber(my_location.distanceTo(target)) + "m away");
+            } else {
+                place_distance.setText(NumberHelper.formatNumber(marker.getDistance()) + "m away");
             }
 
         }

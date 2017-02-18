@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/nearby"
+        android:icon="@drawable/ic_near_me_black_24dp"
+        android:title="Nearby"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/layers"
         android:icon="@drawable/ic_layers_black_24dp"
         android:title="Layers"
