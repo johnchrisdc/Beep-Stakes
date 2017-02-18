@@ -271,11 +271,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         mMap.getUiSettings().setCompassEnabled(true);
 
-        new GetMarkers().execute();
-        new GetMRT3Line().execute();
-        new GetLRT1Line().execute();
-        new GetLRT2Line().execute();
-
         mMap.setOnMarkerClickListener(this);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -526,6 +521,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         materialProgressDialog.dismiss();
+
+        new GetMarkers().execute();
+        new GetMRT3Line().execute();
+        new GetLRT1Line().execute();
+        new GetLRT2Line().execute();
     }
 
     private MaterialDialog materialDialog;
@@ -553,6 +553,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                 })
                 .show();
+
+        new GetMarkers().execute();
+        new GetMRT3Line().execute();
+        new GetLRT1Line().execute();
+        new GetLRT2Line().execute();
     }
 
     @Override
@@ -911,6 +916,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         public Fragment getItem(int position) {
             Fragment fragment = new MarkerFragment();
             ((MarkerFragment) fragment).setMarker(markers.get(position));
+            ((MarkerFragment) fragment).setMy_location(mLastLocation);
             return fragment;
         }
 
@@ -941,6 +947,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         public Fragment getItem(int position) {
             Fragment fragment = new MRT3Fragment();
             ((MRT3Fragment) fragment).setMarker(markers.get(position));
+            ((MRT3Fragment) fragment).setMy_location(mLastLocation);
             return fragment;
         }
 
@@ -971,6 +978,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         public Fragment getItem(int position) {
             Fragment fragment = new LRT1Fragment();
             ((LRT1Fragment) fragment).setMarker(markers.get(position));
+            ((LRT1Fragment) fragment).setMy_location(mLastLocation);
             return fragment;
         }
 
@@ -1001,6 +1009,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         public Fragment getItem(int position) {
             Fragment fragment = new LRT2Fragment();
             ((LRT2Fragment) fragment).setMarker(markers.get(position));
+            ((LRT2Fragment) fragment).setMy_location(mLastLocation);
             return fragment;
         }
 

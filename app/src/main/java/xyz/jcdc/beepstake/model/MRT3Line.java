@@ -22,7 +22,7 @@ public class MRT3Line extends Line {
 
     public static List<MRT3Line> getLine() throws Exception {
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder().retryOnConnectionFailure(true).build();
 
         Request request = new Request.Builder()
                 .url(Variables.LINES_MRT3)

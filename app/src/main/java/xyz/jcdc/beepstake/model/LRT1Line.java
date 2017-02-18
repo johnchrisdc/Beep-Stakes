@@ -21,7 +21,7 @@ public class LRT1Line extends Line {
 
     public static List<LRT1Line> getLine() throws Exception {
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder().retryOnConnectionFailure(true).build();
 
         Request request = new Request.Builder()
                 .url(Variables.LINES_LRT1)
