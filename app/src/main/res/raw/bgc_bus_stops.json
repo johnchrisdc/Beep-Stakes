@@ -1,0 +1,225 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.030122,
+          14.5500121,
+          0
+        ]
+      },
+      "properties": {
+        "name": "EDSA-Ayala Terminal",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "EDSA MRT Ayala Station"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0552704,
+          14.5472705,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Market Market BGC Bus Termimal",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "Serendra, Red Oak, Aston, Meranti, South of Market, Infinity"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0568798,
+          14.5514556,
+          0
+        ]
+      },
+      "properties": {
+        "name": "University Parkway",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "Market Market, STI Global, Every Nation, Treston College, International School Manila, Japanese School, British School, Department of Energy, PNOC, MWSS, Summit School"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0503995,
+          14.5495136,
+          0
+        ]
+      },
+      "properties": {
+        "name": "One Parkade",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "Bonifacio High Street, Terra 26th Park, Alveo, ActiveFun, Honda, W Office, NBC Tent"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0512257,
+          14.5516737,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Nutri Asia",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "Bonifacio High Street, Two Parkade, Del Monte, W Global Center, Seda Hotel, TRS, NAC Tower, Eco Tower"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0475993,
+          14.5488906,
+          0
+        ]
+      },
+      "properties": {
+        "name": "RCBC",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "Bonifacio High Street Central, The Fort Strip, Fort Pointe"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0458451,
+          14.5502925,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Net One",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "Net One, Net Square, The Mind Museum, Marajo Tower, Luxe Residences, One McKinley Place, Forbes Wood Heights, Forbes Wood Parklane, Eight Forbes Town Road, Avant at the Fort, Icon"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0464621,
+          14.5532418,
+          0
+        ]
+      },
+      "properties": {
+        "name": "NetCube",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "The Mind Museum, Net Quad, Shangri-la at the Fort, Fort Legend, McKinley Park Residence, E-Commerce Center, Mercury Drug, Bonifacio One Technology Tower, Bench Tower, Furnitalia, Cats Motors, Ford, Kia"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0485113,
+          14.5534079,
+          0
+        ]
+      },
+      "properties": {
+        "name": "5th Ave / HCBC",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "Crossroads, Saint Lukes Hospital, S&R, 32nd and 5th, Jaguar, McHome Depot, Globe, W Fifth Avenue, F1 Hotel"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0459793,
+          14.5475925,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Fort Victoria",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "Sunlife Financial, The Beaufort, Pacific Plaza Towers, Fairways Tower"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0502064,
+          14.5529094,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Globe",
+        "styleUrl": "#icon-1423-nodesc",
+        "styleHash": "540aa14"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0439515,
+          14.5544567,
+          0
+        ]
+      },
+      "properties": {
+        "name": "Crescent Park",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "Bonifacio Technological Center, BGC Stopover, Net Plaza, Bonifacio Edge Condominium, Grand Hampton, Fort Palm Springs, Ascendas, Kensington, Penhurst, Crescent Park Residence, The Fort Residencem Belagio, Burgos Circle"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.0460865,
+          14.5463567,
+          0
+        ]
+      },
+      "properties": {
+        "name": "McKinley Parkway",
+        "styleUrl": "#icon-1423",
+        "styleHash": "712eb401",
+        "description": "Singapore Embassy, Seibu Tower, Regent Parkway, Essensa, Fifth Avenue Place, Arya Residences, Trion Towers, Jecoprime"
+      }
+    }
+  ]
+}

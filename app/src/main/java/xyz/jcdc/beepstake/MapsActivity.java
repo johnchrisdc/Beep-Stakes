@@ -60,6 +60,7 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.pnikosis.materialishprogress.ProgressWheel;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +70,8 @@ import xyz.jcdc.beepstake.fragment.MRT3Fragment;
 import xyz.jcdc.beepstake.fragment.MarkerFragment;
 import xyz.jcdc.beepstake.fragment.NearbyBeepSiteDialogFragment;
 import xyz.jcdc.beepstake.helper.NumberHelper;
+import xyz.jcdc.beepstake.model.BGCBusStop;
+import xyz.jcdc.beepstake.model.BGCRoute;
 import xyz.jcdc.beepstake.model.LRT1Line;
 import xyz.jcdc.beepstake.model.LRT2Line;
 import xyz.jcdc.beepstake.model.Line;
@@ -100,6 +103,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<com.google.android.gms.maps.model.Marker> mLRT2Stations = new ArrayList<>();
     private List<Polyline> polylines_LRT2 = new ArrayList<>();
     private boolean isShowingLRT2Stations = true;
+
+    private List<Polyline> polylines_bgc_central_route = new ArrayList<>();
+    private boolean isShowingBGCCentralRoute = true;
+
+    private List<Polyline> polylines_bgc_east_route = new ArrayList<>();
+    private boolean isShowingBGCEastRoute = true;
+
+    private List<Polyline> polylines_bgc_lower_west_route = new ArrayList<>();
+    private boolean isShowingBGCLowerWestRoute = true;
+
+    private List<Polyline> polylines_bgc_upper_west_route = new ArrayList<>();
+    private boolean isShowingBGCUpperWestRoute = true;
+
+    private List<Polyline> polylines_bgc_night_route = new ArrayList<>();
+    private boolean isShowingBGCNightRoute = true;
 
     private Drawer drawer;
 
@@ -287,6 +305,134 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 collapseBottomSheets();
             }
         });
+
+        getBGCCentralRoute();
+        getBGCEastRoute();
+        getBGCUpperWestRoute();
+        getBGCLowerWestRoute();
+        getBGCNightRoute();
+        getBGCBusStops();
+    }
+
+    private void getBGCBusStops() {
+        try {
+            for (BGCBusStop.Feature feature : BGCBusStop.getBgcBusStop(mContext).getFeatures()) {
+                LatLng marker_position = new LatLng(feature.getGeometry().getCoordinates()[1], feature.getGeometry().getCoordinates()[0]);
+
+                com.google.android.gms.maps.model.Marker mapMarker = mMap.addMarker(
+                        new MarkerOptions()
+                                .position(marker_position)
+                                .title(feature.getProperties().getName())
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_bus)));
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getBGCCentralRoute() {
+        try {
+            LatLng prev_LatLng = null;
+
+            for (double[] doubles : BGCRoute.getCentralRoute(mContext).getCoordinates()) {
+                if (prev_LatLng != null) {
+                    Polyline line = mMap.addPolyline(new PolylineOptions()
+                            .add(prev_LatLng, new LatLng(doubles[1], doubles[0]))
+                            .width(5)
+                            .color(ContextCompat.getColor(mContext, R.color.bgc_central)));
+
+                    polylines_bgc_central_route.add(line);
+                }
+
+                prev_LatLng = new LatLng(doubles[1], doubles[0]);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getBGCEastRoute() {
+        try {
+            LatLng prev_LatLng = null;
+
+            for (double[] doubles : BGCRoute.getEastRoute(mContext).getCoordinates()) {
+                if (prev_LatLng != null) {
+                    Polyline line = mMap.addPolyline(new PolylineOptions()
+                            .add(prev_LatLng, new LatLng(doubles[1], doubles[0]))
+                            .width(5)
+                            .color(ContextCompat.getColor(mContext, R.color.bgc_east)));
+
+                    polylines_bgc_east_route.add(line);
+                }
+
+                prev_LatLng = new LatLng(doubles[1], doubles[0]);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getBGCUpperWestRoute() {
+        try {
+            LatLng prev_LatLng = null;
+
+            for (double[] doubles : BGCRoute.getUpperWestRoute(mContext).getCoordinates()) {
+                if (prev_LatLng != null) {
+                    Polyline line = mMap.addPolyline(new PolylineOptions()
+                            .add(prev_LatLng, new LatLng(doubles[1], doubles[0]))
+                            .width(5)
+                            .color(ContextCompat.getColor(mContext, R.color.bgc_upper_west)));
+
+                        polylines_bgc_upper_west_route.add(line);
+                }
+
+                prev_LatLng = new LatLng(doubles[1], doubles[0]);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getBGCLowerWestRoute() {
+        try {
+            LatLng prev_LatLng = null;
+
+            for (double[] doubles : BGCRoute.getLowerWestRoute(mContext).getCoordinates()) {
+                if (prev_LatLng != null) {
+                    Polyline line = mMap.addPolyline(new PolylineOptions()
+                            .add(prev_LatLng, new LatLng(doubles[1], doubles[0]))
+                            .width(5)
+                            .color(ContextCompat.getColor(mContext, R.color.bgc_lower_west)));
+
+                        polylines_bgc_lower_west_route.add(line);
+                }
+
+                prev_LatLng = new LatLng(doubles[1], doubles[0]);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getBGCNightRoute() {
+        try {
+            LatLng prev_LatLng = null;
+
+            for (double[] doubles : BGCRoute.getNightRoute(mContext).getCoordinates()) {
+                if (prev_LatLng != null) {
+                    Polyline line = mMap.addPolyline(new PolylineOptions()
+                            .add(prev_LatLng, new LatLng(doubles[1], doubles[0]))
+                            .width(5)
+                            .color(ContextCompat.getColor(mContext, R.color.bgc_night)));
+
+                    polylines_bgc_night_route.add(line);
+                }
+
+                prev_LatLng = new LatLng(doubles[1], doubles[0]);
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -379,6 +525,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SwitchCompat switchCompat_LRT1 = (SwitchCompat) dialog.findViewById(R.id.switch_LRT1);
         SwitchCompat switchCompat_LRT2 = (SwitchCompat) dialog.findViewById(R.id.switch_LRT2);
 
+        SwitchCompat switchCompat_BGC_central_route = (SwitchCompat) dialog.findViewById(R.id.switch_bgc_central);
+        SwitchCompat switchCompat_BGC_east_route = (SwitchCompat) dialog.findViewById(R.id.switch_bgc_east);
+        SwitchCompat switchCompat_BGC_lower_west_route = (SwitchCompat) dialog.findViewById(R.id.switch_bgc_lower_west);
+        SwitchCompat switchCompat_BGC_upper_west_route = (SwitchCompat) dialog.findViewById(R.id.switch_bgc_upper_west);
+        SwitchCompat switchCompat_BGC_night_route = (SwitchCompat) dialog.findViewById(R.id.switch_bgc_night);
+
         dismiss.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -438,7 +590,82 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        switchCompat_BGC_central_route.setChecked(isShowingBGCCentralRoute);
+        switchCompat_BGC_central_route.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                toggleBGCCentralRoutes(checked);
+                isShowingBGCCentralRoute = checked;
+            }
+        });
+
+        switchCompat_BGC_east_route.setChecked(isShowingBGCEastRoute);
+        switchCompat_BGC_east_route.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                toggleBGCEastRoutes(checked);
+                isShowingBGCEastRoute = checked;
+            }
+        });
+
+        switchCompat_BGC_lower_west_route.setChecked(isShowingBGCLowerWestRoute);
+        switchCompat_BGC_lower_west_route.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                toggleBGCLowerWestRoutes(checked);
+                isShowingBGCLowerWestRoute = checked;
+            }
+        });
+
+        switchCompat_BGC_upper_west_route.setChecked(isShowingBGCUpperWestRoute);
+        switchCompat_BGC_upper_west_route.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                toggleBGCUpperWestRoutes(checked);
+                isShowingBGCUpperWestRoute = checked;
+            }
+        });
+
+        switchCompat_BGC_night_route.setChecked(isShowingBGCNightRoute);
+        switchCompat_BGC_night_route.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                toggleBGCNightRoutes(checked);
+                isShowingBGCNightRoute = checked;
+            }
+        });
+
         dialog.show();
+    }
+
+    private void toggleBGCCentralRoutes(boolean show) {
+        for (Polyline polyline : polylines_bgc_central_route) {
+            polyline.setVisible(show);
+        }
+    }
+
+    private void toggleBGCEastRoutes(boolean show) {
+        for (Polyline polyline : polylines_bgc_east_route) {
+            polyline.setVisible(show);
+        }
+    }
+
+    private void toggleBGCUpperWestRoutes(boolean show) {
+        for (Polyline polyline : polylines_bgc_upper_west_route) {
+            polyline.setVisible(show);
+        }
+    }
+
+    private void toggleBGCLowerWestRoutes(boolean show) {
+        for (Polyline polyline : polylines_bgc_lower_west_route) {
+            polyline.setVisible(show);
+        }
+    }
+
+    private void toggleBGCNightRoutes(boolean show) {
+        for (Polyline polyline : polylines_bgc_night_route) {
+            polyline.setVisible(show);
+        }
     }
 
     private void removeAllBeepSiteMarkers() {

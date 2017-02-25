@@ -55,7 +55,7 @@
     </style>
 
     <style name="AppTheme.BGCWest">
-        <item name="colorAccent">@color/bgc_west_route</item>
+        <item name="colorAccent">@color/bgc_lower_west</item>
     </style>
 
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
