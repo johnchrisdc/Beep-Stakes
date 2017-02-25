@@ -253,6 +253,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             case R.id.nearby:
                 showNearbyDialog();
+                collapseBottomSheets();
                 break;
 
         }
