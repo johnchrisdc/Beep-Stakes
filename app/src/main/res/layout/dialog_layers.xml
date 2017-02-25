@@ -77,6 +77,76 @@
                     android:textColor="@color/color_mrt3"
                     app:theme="@style/AppTheme.MRT3" />
 
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_bgc_central"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:checked="true"
+                    android:text="BGC Central Route"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/bgc_central"
+                    app:theme="@style/AppTheme.BGCCentral" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_bgc_east"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:checked="true"
+                    android:text="BGC East Route"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/bgc_east"
+                    app:theme="@style/AppTheme.BGCEast" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_bgc_lower_west"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:checked="true"
+                    android:text="BGC Lower West Route"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/bgc_lower_west"
+                    app:theme="@style/AppTheme.BGCWest" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_bgc_night"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:checked="true"
+                    android:text="BGC Night Route"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/bgc_night"
+                    app:theme="@style/AppTheme.BGCNight" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_bgc_north"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:checked="true"
+                    android:text="BGC North Route"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/bgc_north"
+                    app:theme="@style/AppTheme.BGCNorth" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_bgc_upper_west"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:checked="true"
+                    android:text="BGC Upper West Route"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/bgc_upper_west"
+                    app:theme="@style/AppTheme.BGCUpperWest" />
+
+                <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_bgc_west"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:checked="true"
+                    android:text="BGC West Route"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/bgc_west_route"
+                    app:theme="@style/AppTheme.BGCWest" />
+
             </LinearLayout>
 
         </ScrollView>

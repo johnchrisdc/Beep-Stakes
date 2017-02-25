@@ -30,6 +30,34 @@
         <item name="colorAccent">@color/color_lrt2</item>
     </style>
 
+    <style name="AppTheme.BGCCentral">
+        <item name="colorAccent">@color/bgc_central</item>
+    </style>
+
+    <style name="AppTheme.BGCEast">
+        <item name="colorAccent">@color/bgc_east</item>
+    </style>
+
+    <style name="AppTheme.BGCLowerWest">
+        <item name="colorAccent">@color/bgc_lower_west</item>
+    </style>
+
+    <style name="AppTheme.BGCNight">
+        <item name="colorAccent">@color/bgc_night</item>
+    </style>
+
+    <style name="AppTheme.BGCNorth">
+        <item name="colorAccent">@color/bgc_north</item>
+    </style>
+
+    <style name="AppTheme.BGCUpperWest">
+        <item name="colorAccent">@color/bgc_upper_west</item>
+    </style>
+
+    <style name="AppTheme.BGCWest">
+        <item name="colorAccent">@color/bgc_west_route</item>
+    </style>
+
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />

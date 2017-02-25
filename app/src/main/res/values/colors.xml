@@ -10,6 +10,14 @@
     <color name="color_lrt1">#e95d48</color>
     <color name="color_lrt2">#9957b5</color>
 
+    <color name="bgc_central">#bf00ff</color>
+    <color name="bgc_east">#f00</color>
+    <color name="bgc_lower_west">#0e0efd</color>
+    <color name="bgc_night">#29e8e8</color>
+    <color name="bgc_north">#fe4104</color>
+    <color name="bgc_upper_west">#1ffa1f</color>
+    <color name="bgc_west_route">#fbfb09</color>
+
     <color name="color_title">#000000</color>
     <color name="color_subtitle">#303030</color>
 </resources>
