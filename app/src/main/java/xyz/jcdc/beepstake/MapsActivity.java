@@ -333,13 +333,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMarkerClicked(Marker marker) {
-        LatLng loc = new LatLng(marker.getLat(), marker.getLng());
+        viewPager.setCurrentItem(marker.getPosition(), true);
 
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(loc)
-                .zoom(15)
-                .build();
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private void collapseBottomSheets() {
@@ -645,7 +644,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (markers != null) {
                 int x = 0;
                 for (Marker marker : markers) {
-
                     marker.setPosition(x);
                     x++;
                     LatLng marker_position = new LatLng(marker.getLat(), marker.getLng());
@@ -667,13 +665,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                         marker.setDistance(mLastLocation.distanceTo(target));
                     }
-                }
-
-                if (mLastLocation != null) {
-                    nearbyBeepSiteDialogFragment = new NearbyBeepSiteDialogFragment();
-                    nearbyBeepSiteDialogFragment.setOnMarkerClicked(MapsActivity.this);
-                    nearbyBeepSiteDialogFragment.setMarkers(beep_markers);
-                    nearbyBeepSiteDialogFragment.show(getSupportFragmentManager(), "nearby");
                 }
 
                 MarkersPagerAdapter markersPagerAdapter = new MarkersPagerAdapter(getSupportFragmentManager(), beep_markers);
@@ -707,6 +698,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 progressWheel.setVisibility(View.GONE);
                 progressWheel.stopSpinning();
 
+                if (mLastLocation != null) {
+                    nearbyBeepSiteDialogFragment = new NearbyBeepSiteDialogFragment();
+                    nearbyBeepSiteDialogFragment.setOnMarkerClicked(MapsActivity.this);
+                    nearbyBeepSiteDialogFragment.setMarkers(beep_markers);
+                    nearbyBeepSiteDialogFragment.show(getSupportFragmentManager(), "nearby");
+                }
             }
 
         }

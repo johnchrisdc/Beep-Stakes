@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,8 +46,13 @@ public class NearbyBeepSiteDialogFragment extends AppCompatDialogFragment implem
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
 
         if (markers != null) {
-            Collections.sort(markers);
-            MarkersPagerAdapter markersPagerAdapter = new MarkersPagerAdapter(getChildFragmentManager(), markers.subList(0, 5));
+            List<Marker> markers_ = new ArrayList<>();
+
+            for (Marker marker : markers){
+                markers_.add(marker);
+            }
+            Collections.sort(markers_);
+            MarkersPagerAdapter markersPagerAdapter = new MarkersPagerAdapter(getChildFragmentManager(), markers_.subList(0, 5));
             markersPagerAdapter.setOnMarkerClicked(this);
             viewPager.setClipToPadding(false);
             viewPager.setPageMargin(5);
