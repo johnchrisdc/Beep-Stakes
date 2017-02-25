@@ -685,8 +685,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onPageSelected(int position) {
                         LatLng latLng = new LatLng(beep_markers.get(position).getLat(), beep_markers.get(position).getLng());
-                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
-                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(latLng).zoom(15).build()));
                     }
 
                     @Override
@@ -774,8 +773,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onPageSelected(int position) {
                         LatLng latLng = new LatLng(mrt3_markers.get(position).getLat(), mrt3_markers.get(position).getLng());
-                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
-                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(latLng).zoom(15).build()));
                     }
 
                     @Override
@@ -856,8 +854,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onPageSelected(int position) {
                         LatLng latLng = new LatLng(lrt_markers.get(position).getLat(), lrt_markers.get(position).getLng());
-                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
-                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(latLng).zoom(15).build()));
                     }
 
                     @Override
@@ -938,8 +935,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     @Override
                     public void onPageSelected(int position) {
                         LatLng latLng = new LatLng(lrt2_markers.get(position).getLat(), lrt2_markers.get(position).getLng());
-                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
-                        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(latLng).zoom(15).build()));
                     }
 
                     @Override
