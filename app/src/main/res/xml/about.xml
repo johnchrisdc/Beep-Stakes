@@ -18,6 +18,11 @@
             android:title="Our friends from DOTC MRT3 Line 3"
             android:summary="https://dotcmrt3.gov.ph/" />
 
+        <Preference
+            android:key="bgc"
+            android:title="Bonifacio Global City"
+            android:summary="http://bgc.com.ph/" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
