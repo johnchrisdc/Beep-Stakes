@@ -32,6 +32,15 @@ public class BGCBusStop {
     public static class Feature {
         private Geometry geometry;
         private Properties properties;
+        private int position;
+
+        public int getPosition() {
+            return position;
+        }
+
+        public void setPosition(int position) {
+            this.position = position;
+        }
 
         public Geometry getGeometry() {
             return geometry;

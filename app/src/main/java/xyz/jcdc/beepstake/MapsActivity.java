@@ -64,6 +64,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
+import xyz.jcdc.beepstake.fragment.BGCBusStationFragment;
 import xyz.jcdc.beepstake.fragment.LRT1Fragment;
 import xyz.jcdc.beepstake.fragment.LRT2Fragment;
 import xyz.jcdc.beepstake.fragment.MRT3Fragment;
@@ -147,6 +148,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ViewPager viewPager_lrt2;
     private List<LRT2Line> lrt2_markers = new ArrayList<>();
 
+    private BottomSheetBehavior mBottomSheetBehavior_bgc_bus;
+    private View mBottomSheet_bgc_bus;
+    private ViewPager viewPager_bgc_bus;
+
+    private List<BGCBusStop.Feature> features;
+
     private boolean isPermissionGranted = false;
 
     private ProgressWheel progressWheel;
@@ -187,6 +194,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mBottomSheetBehavior_lrt2 = BottomSheetBehavior.from(mBottomSheet_lrt2);
 
         viewPager_lrt2 = (ViewPager) findViewById(R.id.viewpager_lrt2);
+
+        mBottomSheet_bgc_bus = findViewById(R.id.bottom_sheet_bgc_bus);
+        mBottomSheetBehavior_bgc_bus = BottomSheetBehavior.from(mBottomSheet_bgc_bus);
+
+        viewPager_bgc_bus = (ViewPager) findViewById(R.id.viewpager_bgc_bus);
+
 
         progressWheel = (ProgressWheel) findViewById(R.id.progress_wheel);
 
@@ -319,7 +332,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void getBGCBusStops() {
         try {
-            for (BGCBusStop.Feature feature : BGCBusStop.getBgcBusStop(mContext).getFeatures()) {
+            features = BGCBusStop.getBgcBusStop(mContext).getFeatures();
+
+            int x = 0;
+
+            for (BGCBusStop.Feature feature : features) {
+                feature.setPosition(x);
+                x++;
                 LatLng marker_position = new LatLng(feature.getGeometry().getCoordinates()[1], feature.getGeometry().getCoordinates()[0]);
 
                 com.google.android.gms.maps.model.Marker mapMarker = mMap.addMarker(
@@ -328,8 +347,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 .title(feature.getProperties().getName())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_bus)));
 
+                mapMarker.setTag(feature);
+
                 mBGCBusStation.add(mapMarker);
             }
+
+            BGCBusStationsPagerAdapter markersPagerAdapter = new BGCBusStationsPagerAdapter(getSupportFragmentManager(), features);
+
+            viewPager_bgc_bus.setClipToPadding(false);
+            viewPager_bgc_bus.setPageMargin(5);
+            viewPager_bgc_bus.setPadding(60, 0, 60, 0);
+            viewPager_bgc_bus.setOffscreenPageLimit(3);
+
+            viewPager_bgc_bus.setAdapter(markersPagerAdapter);
+
+            viewPager_bgc_bus.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    mBGCBusStation.get(position).showInfoWindow();
+                    LatLng latLng = new LatLng(features.get(position).getGeometry().getCoordinates()[1], features.get(position).getGeometry().getCoordinates()[0]);
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(latLng).zoom(15).build()));
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -444,41 +494,57 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public boolean onMarkerClick(com.google.android.gms.maps.model.Marker marker_) {
 
         if (marker_.getTag() != null) {
-            final Line marker = (Line) marker_.getTag();
+            if (marker_.getTag() instanceof Line) {
+                final Line marker = (Line) marker_.getTag();
 
-            if (marker.getGroup_key() == null) {
-                viewPager.setCurrentItem(marker.getPosition(), true);
+                if (marker.getGroup_key() == null) {
+                    viewPager.setCurrentItem(marker.getPosition(), true);
 
-                mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_bgc_bus.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
-            } else if (marker.getGroup_key().equalsIgnoreCase(MRT3Line.GROUP_KEY)) {
-                viewPager_mrt3.setCurrentItem(marker.getPosition(), true);
+                } else if (marker.getGroup_key().equalsIgnoreCase(MRT3Line.GROUP_KEY)) {
+                    viewPager_mrt3.setCurrentItem(marker.getPosition(), true);
+
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_bgc_bus.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                } else if (marker.getGroup_key().equalsIgnoreCase(LRT1Line.GROUP_KEY)) {
+                    viewPager_lrt1.setCurrentItem(marker.getPosition(), true);
+
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_bgc_bus.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                } else if (marker.getGroup_key().equalsIgnoreCase(LRT2Line.GROUP_KEY)) {
+                    viewPager_lrt2.setCurrentItem(marker.getPosition(), true);
+
+                    mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                    mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_EXPANDED);
+                    mBottomSheetBehavior_bgc_bus.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
+                }
+            } else if (marker_.getTag() instanceof BGCBusStop.Feature) {
+                BGCBusStop.Feature marker = (BGCBusStop.Feature) marker_.getTag();
+                viewPager_bgc_bus.setCurrentItem(marker.getPosition(), true);
 
                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_EXPANDED);
-                mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-            } else if (marker.getGroup_key().equalsIgnoreCase(LRT1Line.GROUP_KEY)) {
-                viewPager_lrt1.setCurrentItem(marker.getPosition(), true);
-
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_EXPANDED);
-                mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
-            } else if (marker.getGroup_key().equalsIgnoreCase(LRT2Line.GROUP_KEY)) {
-                viewPager_lrt2.setCurrentItem(marker.getPosition(), true);
-
-                mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
                 mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_EXPANDED);
-
+                mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                mBottomSheetBehavior_bgc_bus.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
+
         }
         return false;
     }
@@ -498,7 +564,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         mBottomSheetBehavior_mrt3.setState(BottomSheetBehavior.STATE_COLLAPSED);
         mBottomSheetBehavior_lrt1.setState(BottomSheetBehavior.STATE_COLLAPSED);
         mBottomSheetBehavior_lrt2.setState(BottomSheetBehavior.STATE_COLLAPSED);
-
+        mBottomSheetBehavior_bgc_bus.setState(BottomSheetBehavior.STATE_COLLAPSED);
     }
 
     private void showNearbyDialog() {
@@ -933,6 +999,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     @Override
                     public void onPageSelected(int position) {
+                        mbeepStations.get(position).showInfoWindow();
                         LatLng latLng = new LatLng(beep_markers.get(position).getLat(), beep_markers.get(position).getLng());
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(latLng).zoom(15).build()));
                     }
@@ -975,7 +1042,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         @Override
-        protected void onPostExecute(List<MRT3Line> mrt3Lines) {
+        protected void onPostExecute(final List<MRT3Line> mrt3Lines) {
             super.onPostExecute(mrt3Lines);
 
             if (mrt3Lines != null) {
@@ -1021,6 +1088,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     @Override
                     public void onPageSelected(int position) {
+                        mMRT3Stations.get(position).showInfoWindow();
                         LatLng latLng = new LatLng(mrt3_markers.get(position).getLat(), mrt3_markers.get(position).getLng());
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(latLng).zoom(15).build()));
                     }
@@ -1102,6 +1170,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     @Override
                     public void onPageSelected(int position) {
+                        mLRT1Stations.get(position).showInfoWindow();
                         LatLng latLng = new LatLng(lrt_markers.get(position).getLat(), lrt_markers.get(position).getLng());
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(latLng).zoom(15).build()));
                     }
@@ -1183,6 +1252,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     @Override
                     public void onPageSelected(int position) {
+                        mLRT2Stations.get(position).showInfoWindow();
                         LatLng latLng = new LatLng(lrt2_markers.get(position).getLat(), lrt2_markers.get(position).getLng());
                         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(new CameraPosition.Builder().target(latLng).zoom(15).build()));
                     }
@@ -1322,4 +1392,34 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
+    private class BGCBusStationsPagerAdapter extends FragmentStatePagerAdapter {
+
+        List<BGCBusStop.Feature> markers;
+
+        public BGCBusStationsPagerAdapter(FragmentManager fm, List<BGCBusStop.Feature> markers) {
+            super(fm);
+            this.markers = markers;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = new BGCBusStationFragment();
+            ((BGCBusStationFragment) fragment).setBgcBusStop(markers.get(position));
+            ((BGCBusStationFragment) fragment).setMy_location(mLastLocation);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return markers.size();
+        }
+
+        public List<BGCBusStop.Feature> getMarkers() {
+            return markers;
+        }
+
+        public void setMarkers(List<BGCBusStop.Feature> markers) {
+            this.markers = markers;
+        }
+    }
 }

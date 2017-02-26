@@ -128,6 +128,7 @@
                     app:theme="@style/AppTheme.BGCNight" />
 
                 <android.support.v7.widget.SwitchCompat
+                    android:visibility="gone"
                     android:id="@+id/switch_bgc_north"
                     android:layout_width="match_parent"
                     android:layout_height="46dp"
@@ -148,6 +149,7 @@
                     app:theme="@style/AppTheme.BGCUpperWest" />
 
                 <android.support.v7.widget.SwitchCompat
+                    android:visibility="gone"
                     android:id="@+id/switch_bgc_west"
                     android:layout_width="match_parent"
                     android:layout_height="46dp"
