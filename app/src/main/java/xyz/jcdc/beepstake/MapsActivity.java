@@ -119,6 +119,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private List<Polyline> polylines_bgc_night_route = new ArrayList<>();
     private boolean isShowingBGCNightRoute = true;
 
+    private List<com.google.android.gms.maps.model.Marker> mBGCBusStation = new ArrayList<>();
+    private boolean isShowingBGCBusStations = true;
+
     private Drawer drawer;
 
     private GoogleApiClient mGoogleApiClient;
@@ -324,6 +327,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                                 .position(marker_position)
                                 .title(feature.getProperties().getName())
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_directions_bus)));
+
+                mBGCBusStation.add(mapMarker);
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -525,6 +530,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         SwitchCompat switchCompat_LRT1 = (SwitchCompat) dialog.findViewById(R.id.switch_LRT1);
         SwitchCompat switchCompat_LRT2 = (SwitchCompat) dialog.findViewById(R.id.switch_LRT2);
 
+        SwitchCompat switchCompat_BGC_bus_stops = (SwitchCompat) dialog.findViewById(R.id.switch_bgc_bus_stops);
         SwitchCompat switchCompat_BGC_central_route = (SwitchCompat) dialog.findViewById(R.id.switch_bgc_central);
         SwitchCompat switchCompat_BGC_east_route = (SwitchCompat) dialog.findViewById(R.id.switch_bgc_east);
         SwitchCompat switchCompat_BGC_lower_west_route = (SwitchCompat) dialog.findViewById(R.id.switch_bgc_lower_west);
@@ -590,6 +596,15 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        switchCompat_BGC_bus_stops.setChecked(isShowingBGCBusStations);
+        switchCompat_BGC_bus_stops.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                toggleBGCBusStops(checked);
+                isShowingBGCBusStations = checked;
+            }
+        });
+
         switchCompat_BGC_central_route.setChecked(isShowingBGCCentralRoute);
         switchCompat_BGC_central_route.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -636,6 +651,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
 
         dialog.show();
+    }
+
+    private void toggleBGCBusStops(boolean show) {
+        for (com.google.android.gms.maps.model.Marker marker : mBGCBusStation) {
+            marker.setVisible(show);
+        }
     }
 
     private void toggleBGCCentralRoutes(boolean show) {

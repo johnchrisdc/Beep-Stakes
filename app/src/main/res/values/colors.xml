@@ -17,6 +17,7 @@
     <color name="bgc_north">#fe4104</color>
     <color name="bgc_upper_west">#1ffa1f</color>
     <color name="bgc_west_route">#fbfb09</color>
+    <color name="bgc_bus_stops">#40C4FF</color>
 
     <color name="color_title">#000000</color>
     <color name="color_subtitle">#303030</color>

@@ -78,6 +78,16 @@
                     app:theme="@style/AppTheme.MRT3" />
 
                 <android.support.v7.widget.SwitchCompat
+                    android:id="@+id/switch_bgc_bus_stops"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:checked="true"
+                    android:text="BGC Bus Stops"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="@color/bgc_bus_stops"
+                    app:theme="@style/AppTheme.BGCBusStops" />
+
+                <android.support.v7.widget.SwitchCompat
                     android:id="@+id/switch_bgc_central"
                     android:layout_width="match_parent"
                     android:layout_height="46dp"

@@ -30,6 +30,10 @@
         <item name="colorAccent">@color/color_lrt2</item>
     </style>
 
+    <style name="AppTheme.BGCBusStops">
+        <item name="colorAccent">@color/bgc_bus_stops</item>
+    </style>
+
     <style name="AppTheme.BGCCentral">
         <item name="colorAccent">@color/bgc_central</item>
     </style>
